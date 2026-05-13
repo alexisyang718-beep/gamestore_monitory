@@ -929,6 +929,7 @@
         }
 
         function normalizeScreenshotPath(rawPath) {
+            const IMAGEKIT_BASE = 'https://ik.imagekit.io/gamestoremonitor';
             let path = String(rawPath || '').trim().replace(/\\/g, '/');
             // 兼容旧版路径：资源4.10 → 资源2026-04-10
             path = path.replace(/\/资源(\d{1,2})\.(\d{1,2})\//g, function(match, m, d) {
@@ -936,6 +937,10 @@
                 const dd = String(d).padStart(2, '0');
                 return '/资源2026-' + mm + '-' + dd + '/';
             });
+            // 2026-05 截图已迁移到 ImageKit，保留其他月份走原相对路径
+            if (path.startsWith('../screenshots/资源2026-05-') || path.startsWith('/screenshots/资源2026-05-')) {
+                return IMAGEKIT_BASE + '/' + path.replace(/^\.\.\/screenshots\//, '').replace(/^\/screenshots\//, '');
+            }
             return path;
         }
 
